@@ -10,9 +10,11 @@ public class ExtendedIngredient {
     public String name;
     public String nameClean;
     public String original;
+    public String originalString;
     public String originalName;
     public double amount;
     public String unit;
     public ArrayList<String> meta;
+    public ArrayList<String> metaInformation;
     public Measures measures;
 }

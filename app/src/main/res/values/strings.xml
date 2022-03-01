@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Recipe App</string>
+    <string name="app_name">Recipe <App></App></string>
     <string name="api_key">6574cdfa30ff47d4a3a36ac5ead51924</string>
 
     <string-array name="tags">
