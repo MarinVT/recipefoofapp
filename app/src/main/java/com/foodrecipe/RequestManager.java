@@ -2,9 +2,11 @@ package com.foodrecipe;
 
 import android.content.Context;
 
+import com.foodrecipe.listeners.InstructionListener;
 import com.foodrecipe.listeners.RandomRecipesResponseListeners;
 import com.foodrecipe.listeners.RecipeDetailsListener;
 import com.foodrecipe.listeners.SimilarRecipesListener;
+import com.foodrecipe.models.InstructionsResponse;
 import com.foodrecipe.models.RandomRecipeAPIResponse;
 import com.foodrecipe.models.RecipeDetailsResponse;
 import com.foodrecipe.models.SimilarRecipeResponse;
@@ -100,6 +102,28 @@ public class RequestManager {
         });
     }
 
+    public void getInstruction(InstructionListener listener, int id) {
+        CallInstructions callInstructions = retrofit.create(CallInstructions.class);
+        Call<List<InstructionsResponse>> call = callInstructions.callInstructions(id, context.getString(R.string.api_key));
+
+        call.enqueue(new Callback<List<InstructionsResponse>>() {
+            @Override
+            public void onResponse(Call<List<InstructionsResponse>> call, Response<List<InstructionsResponse>> response) {
+                if (!response.isSuccessful()) {
+                    listener.didError(response.message());
+                    return;
+                }
+
+                listener.didFetch(response.body(), response.message());
+            }
+
+            @Override
+            public void onFailure(Call<List<InstructionsResponse>> call, Throwable t) {
+                listener.didError(t.getMessage());
+            }
+        });
+    }
+
     // random recipe interface
     private interface CallRandomRecipes{
         @GET("recipes/random")
@@ -123,6 +147,14 @@ public class RequestManager {
         Call<List<SimilarRecipeResponse>> callSimilarRecipe(
                 @Path("id") int id,
                 @Query("number") String number,
+                @Query("apiKey") String apiKey
+        );
+    }
+
+    private interface CallInstructions {
+        @GET("recipes/{id}/analyzedInstructions")
+        Call<List<InstructionsResponse>> callInstructions (
+                @Path("id") int id,
                 @Query("apiKey") String apiKey
         );
     }
